@@ -160,7 +160,7 @@ func TestGetPieceA1(t *testing.T) {
 	board := NewGame()
 
 	want := "R"
-	got, _ := getPieceFromSquare(board, square)
+	got, _ := board.getPieceFromSquare(square)
 
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)
@@ -172,7 +172,7 @@ func TestGetPieceE4(t *testing.T) {
 	board := NewGame()
 
 	want := "-"
-	got, _ := getPieceFromSquare(board, square)
+	got, _ := board.getPieceFromSquare(square)
 
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)
@@ -184,7 +184,7 @@ func TestGetPieceH8(t *testing.T) {
 	board := NewGame()
 
 	want := "r"
-	got, _ := getPieceFromSquare(board, square)
+	got, _ := board.getPieceFromSquare(square)
 
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)
@@ -197,7 +197,7 @@ func TestGetPieceA1Fen(t *testing.T) {
 	board, _ := NewGameFromFen(fen)
 
 	want := "q"
-	got, _ := getPieceFromSquare(board, square)
+	got, _ := board.getPieceFromSquare(square)
 
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)
@@ -210,7 +210,32 @@ func TestGetPieceD6Fen(t *testing.T) {
 	board, _ := NewGameFromFen(fen)
 
 	want := "B"
-	got, _ := getPieceFromSquare(board, square)
+	got, _ := board.getPieceFromSquare(square)
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+}
+
+func TestMoveD4(t *testing.T) {
+
+	square := "d4"
+	move := "d2d4"
+	board := NewGame()
+
+	board.movePieceFromString(move)
+
+	want := "P"
+	got, _ := board.getPieceFromSquare(square)
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+
+	square = "d2"
+
+	want = "-"
+	got, _ = board.getPieceFromSquare(square)
 
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)

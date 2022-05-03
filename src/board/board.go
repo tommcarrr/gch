@@ -7,28 +7,6 @@ import (
 	"strings"
 )
 
-var fileMap = map[string]int{
-	"a": 0,
-	"b": 1,
-	"c": 2,
-	"d": 3,
-	"e": 4,
-	"f": 5,
-	"g": 6,
-	"h": 7,
-}
-
-var rankMap = map[string]int{
-	"1": 0,
-	"2": 1,
-	"3": 2,
-	"4": 3,
-	"5": 4,
-	"6": 5,
-	"7": 6,
-	"8": 7,
-}
-
 const errInvalidFen string = "invalid FEN"
 
 const newGameFen string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
@@ -60,6 +38,47 @@ func (b BoardDefinition) String() string {
 	}
 
 	return s
+}
+
+func (b *BoardDefinition) movePieceFromString(move string) (err error) {
+
+	if len(move) < 4 || len(move) > 5 {
+		err = errors.New("invalid move format")
+		return
+	}
+
+	moveRunes := []rune(move)
+
+	from := string(moveRunes[0:2])
+	to := string(moveRunes[2:4])
+
+	promotion := ""
+	if len(move) == 5 {
+		promotion = string(moveRunes[5])
+	}
+
+	fromIndex := squareMap[from]
+	toIndex := squareMap[to]
+
+	fromPiece := b.pieces[fromIndex]
+	toPiece := b.pieces[toIndex]
+
+	if toPiece != "-" && IsUpper(fromPiece) == IsUpper(toPiece) {
+		err = errors.New("invalid move")
+		return
+	} else {
+		b.pieces[fromIndex] = "-"
+		if promotion != "" {
+			b.pieces[toIndex] = promotion
+		} else {
+			b.pieces[toIndex] = fromPiece
+		}
+	}
+	return
+}
+
+func IsUpper(s string) bool {
+	return s == strings.ToUpper(s)
 }
 
 func NewGame() (b BoardDefinition) {
@@ -114,17 +133,13 @@ func parseFenPieces(piecesSegment string) (pieces []string) {
 	return
 }
 
-func getPieceFromSquare(b BoardDefinition, square string) (piece string, err error) {
+func (b BoardDefinition) getPieceFromSquare(square string) (piece string, err error) {
+
 	if len(square) != 2 {
 		err = errors.New("invalid square")
 	}
 
-	squareRunes := []rune(square)
-
-	file := fileMap[string(squareRunes[0])]
-	rank := rankMap[string(squareRunes[1])]
-
-	index := file + (8 * (7 - rank))
+	index := squareMap[square]
 	piece = b.pieces[index]
 
 	return
