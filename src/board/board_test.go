@@ -219,12 +219,12 @@ func TestGetPieceD6Fen(t *testing.T) {
 
 func TestMoveD4(t *testing.T) {
 
-	square := "d4"
 	move := "d2d4"
 	board := NewGame()
 
 	board.movePieceFromString(move)
 
+	square := "d4"
 	want := "P"
 	got, _ := board.getPieceFromSquare(square)
 
@@ -236,6 +236,79 @@ func TestMoveD4(t *testing.T) {
 
 	want = "-"
 	got, _ = board.getPieceFromSquare(square)
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+}
+
+func TestMoveE4E5(t *testing.T) {
+
+	move1 := "e2e4"
+	move2 := "e7e5"
+	board := NewGame()
+
+	board.movePieceFromString(move1)
+	board.movePieceFromString(move2)
+
+	square := "e4"
+	want := "P"
+	got, _ := board.getPieceFromSquare(square)
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+
+	square = "e2"
+
+	want = "-"
+	got, _ = board.getPieceFromSquare(square)
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+
+	square = "e5"
+
+	want = "p"
+	got, _ = board.getPieceFromSquare(square)
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+
+	square = "e7"
+
+	want = "-"
+	got, _ = board.getPieceFromSquare(square)
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+}
+
+func TestMoveInvalidFormat(t *testing.T) {
+	move := "Pd4"
+	board := NewGame()
+
+	err := board.movePieceFromString(move)
+
+	want := errInvalidMoveFormat
+	got := err.Error()
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+}
+
+func TestMoveInvalid(t *testing.T) {
+	move := "b1d2"
+	board := NewGame()
+
+	err := board.movePieceFromString(move)
+
+	want := errInvalidMove
+	got := err.Error()
 
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)

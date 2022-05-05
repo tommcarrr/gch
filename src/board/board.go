@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-const errInvalidFen string = "invalid FEN"
-
 const newGameFen string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 const fenPieces string = "rnbqkpPRNBQK"
 const fenNums string = "12345678"
@@ -43,7 +41,7 @@ func (b BoardDefinition) String() string {
 func (b *BoardDefinition) movePieceFromString(move string) (err error) {
 
 	if len(move) < 4 || len(move) > 5 {
-		err = errors.New("invalid move format")
+		err = errors.New(errInvalidMoveFormat)
 		return
 	}
 
@@ -64,7 +62,7 @@ func (b *BoardDefinition) movePieceFromString(move string) (err error) {
 	toPiece := b.pieces[toIndex]
 
 	if toPiece != "-" && IsUpper(fromPiece) == IsUpper(toPiece) {
-		err = errors.New("invalid move")
+		err = errors.New(errInvalidMove)
 		return
 	} else {
 		b.pieces[fromIndex] = "-"
@@ -136,7 +134,7 @@ func parseFenPieces(piecesSegment string) (pieces []string) {
 func (b BoardDefinition) getPieceFromSquare(square string) (piece string, err error) {
 
 	if len(square) != 2 {
-		err = errors.New("invalid square")
+		err = errors.New(errInvalidSquare)
 	}
 
 	index := squareMap[square]
