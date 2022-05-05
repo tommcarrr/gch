@@ -1,5 +1,12 @@
 package board
 
+type Color int8
+
+const (
+	Black Color = -1
+	White Color = 1
+)
+
 var fileMap = map[string]int{
 	"a": 0,
 	"b": 1,

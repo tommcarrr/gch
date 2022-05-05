@@ -13,11 +13,19 @@ const fenNums string = "12345678"
 
 type BoardDefinition struct {
 	pieces         []string
-	toPlay         string
+	toPlay         Color
 	castlingRights string
 	enPasseMove    string
 	halfMoveCount  int
 	fullMoveCount  int
+}
+
+func (b *BoardDefinition) flip() {
+	if b.toPlay == White {
+		b.toPlay = Black
+	} else {
+		b.toPlay = White
+	}
 }
 
 func (b BoardDefinition) piecesString() (str string) {
@@ -26,7 +34,7 @@ func (b BoardDefinition) piecesString() (str string) {
 
 func (b BoardDefinition) String() string {
 
-	s := fmt.Sprintf("%s to play\n\n", b.toPlay)
+	s := fmt.Sprintf("%v to play\n\n", b.toPlay)
 
 	for i, square := range b.pieces {
 		s = s + fmt.Sprint(square) + " "
@@ -52,7 +60,12 @@ func (b *BoardDefinition) movePieceFromString(move string) (err error) {
 
 	promotion := ""
 	if len(move) == 5 {
-		promotion = string(moveRunes[5])
+		promotion = string(moveRunes[4])
+		if b.toPlay == White {
+			promotion = strings.ToUpper(promotion)
+		} else {
+			promotion = strings.ToLower(promotion)
+		}
 	}
 
 	fromIndex := squareMap[from]
@@ -60,6 +73,16 @@ func (b *BoardDefinition) movePieceFromString(move string) (err error) {
 
 	fromPiece := b.pieces[fromIndex]
 	toPiece := b.pieces[toIndex]
+
+	if fromPiece == "-" {
+		err = errors.New(errInvalidMoveNoPiece)
+		return
+	}
+
+	if (b.toPlay == White && !IsUpper(fromPiece)) || (b.toPlay == Black && IsUpper(fromPiece)) {
+		err = errors.New(errInvalidMoveWrongColor)
+		return
+	}
 
 	if toPiece != "-" && IsUpper(fromPiece) == IsUpper(toPiece) {
 		err = errors.New(errInvalidMove)
@@ -72,6 +95,9 @@ func (b *BoardDefinition) movePieceFromString(move string) (err error) {
 			b.pieces[toIndex] = fromPiece
 		}
 	}
+
+	b.flip()
+
 	return
 }
 
@@ -106,7 +132,14 @@ func generateBoardFromFen(fen string) (b BoardDefinition, err error) {
 		return
 	}
 
-	b.toPlay = elements[1]
+	if elements[1] == "w" {
+		b.toPlay = White
+	} else if elements[1] == "b" {
+		b.toPlay = Black
+	} else {
+		err = errors.New(errInvalidFen)
+		return
+	}
 	b.castlingRights = elements[2]
 	b.enPasseMove = elements[3]
 	b.halfMoveCount, _ = strconv.Atoi(elements[4])

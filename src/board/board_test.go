@@ -14,10 +14,10 @@ func TestNewBoard(t *testing.T) {
 		t.Errorf("board.pieces: got %v, wanted %v", got, want)
 	}
 
-	got = board.toPlay
-	want = "w"
-	if got != want {
-		t.Errorf("board.toPlay: got %v, wanted %v", got, want)
+	gotC := board.toPlay
+	wantC := White
+	if gotC != wantC {
+		t.Errorf("board.toPlay: got %v, wanted %v", gotC, wantC)
 	}
 
 	got = board.enPasseMove
@@ -56,10 +56,10 @@ func TestNewBoardFromFen(t *testing.T) {
 		t.Errorf("board.pieces: got %v, wanted %v", got, want)
 	}
 
-	got = board.toPlay
-	want = "w"
-	if got != want {
-		t.Errorf("board.toPlay: got %v, wanted %v", got, want)
+	gotC := board.toPlay
+	wantC := White
+	if gotC != wantC {
+		t.Errorf("board.toPlay: got %v, wanted %v", gotC, wantC)
 	}
 
 	got = board.enPasseMove
@@ -89,7 +89,7 @@ func TestNewBoardFromFen(t *testing.T) {
 
 func TestNewBoardFromFen2(t *testing.T) {
 
-	fen := "r1bk3r/p2p1pNp/n2B1n2/1p1NP2P/6P1/3P4/P1P1K3/q5b1 w - - 0 23"
+	fen := "r1bk3r/p2p1pNp/n2B1n2/1p1NP2P/6P1/3P4/P1P1K3/q5b1 b - - 0 23"
 	board, _ := NewGameFromFen(fen)
 
 	got := board.piecesString()
@@ -98,10 +98,10 @@ func TestNewBoardFromFen2(t *testing.T) {
 		t.Errorf("board.pieces: got %v, wanted %v", got, want)
 	}
 
-	got = board.toPlay
-	want = "w"
-	if got != want {
-		t.Errorf("board.toPlay: got %v, wanted %v", got, want)
+	gotC := board.toPlay
+	wantC := Black
+	if gotC != wantC {
+		t.Errorf("board.toPlay: got %v, wanted %v", gotC, wantC)
 	}
 
 	got = board.enPasseMove
@@ -240,6 +240,13 @@ func TestMoveD4(t *testing.T) {
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)
 	}
+
+	wantC := Black
+	gotC := board.toPlay
+
+	if gotC != wantC {
+		t.Errorf("got %v, wanted %v", gotC, wantC)
+	}
 }
 
 func TestMoveE4E5(t *testing.T) {
@@ -285,6 +292,37 @@ func TestMoveE4E5(t *testing.T) {
 	if got != want {
 		t.Errorf("got %v, wanted %v", got, want)
 	}
+
+	wantC := White
+	gotC := board.toPlay
+
+	if gotC != wantC {
+		t.Errorf("got %v, wanted %v", gotC, wantC)
+	}
+}
+
+func TestMovePromotion(t *testing.T) {
+
+	move := "g7g8q"
+	board, _ := NewGameFromFen("rnbqkr2/ppp3Pp/3p2p1/3n4/3N1B2/8/PPP2PPP/RN1QKB1R w KQq - 1 10")
+
+	board.movePieceFromString(move)
+
+	square := "g8"
+
+	want := "Q"
+	got, _ := board.getPieceFromSquare(square)
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+
+	wantC := Black
+	gotC := board.toPlay
+
+	if gotC != wantC {
+		t.Errorf("got %v, wanted %v", gotC, wantC)
+	}
 }
 
 func TestMoveInvalidFormat(t *testing.T) {
@@ -308,6 +346,34 @@ func TestMoveInvalid(t *testing.T) {
 	err := board.movePieceFromString(move)
 
 	want := errInvalidMove
+	got := err.Error()
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+}
+
+func TestMoveWrongColor(t *testing.T) {
+	move := "e7e5"
+	board := NewGame()
+
+	err := board.movePieceFromString(move)
+
+	want := errInvalidMoveWrongColor
+	got := err.Error()
+
+	if got != want {
+		t.Errorf("got %v, wanted %v", got, want)
+	}
+}
+
+func TestMoveNoPiece(t *testing.T) {
+	move := "e3e4"
+	board := NewGame()
+
+	err := board.movePieceFromString(move)
+
+	want := errInvalidMoveNoPiece
 	got := err.Error()
 
 	if got != want {
