@@ -222,7 +222,7 @@ func TestMoveD4(t *testing.T) {
 	move := "d2d4"
 	board := NewGame()
 
-	board.movePieceFromString(move)
+	board.MovePieceFromString(move)
 
 	square := "d4"
 	want := "P"
@@ -255,8 +255,8 @@ func TestMoveE4E5(t *testing.T) {
 	move2 := "e7e5"
 	board := NewGame()
 
-	board.movePieceFromString(move1)
-	board.movePieceFromString(move2)
+	board.MovePieceFromString(move1)
+	board.MovePieceFromString(move2)
 
 	square := "e4"
 	want := "P"
@@ -306,7 +306,7 @@ func TestMovePromotion(t *testing.T) {
 	move := "g7g8q"
 	board, _ := NewGameFromFen("rnbqkr2/ppp3Pp/3p2p1/3n4/3N1B2/8/PPP2PPP/RN1QKB1R w KQq - 1 10")
 
-	board.movePieceFromString(move)
+	board.MovePieceFromString(move)
 
 	square := "g8"
 
@@ -329,7 +329,7 @@ func TestMoveInvalidFormat(t *testing.T) {
 	move := "Pd4"
 	board := NewGame()
 
-	err := board.movePieceFromString(move)
+	err := board.MovePieceFromString(move)
 
 	want := errInvalidMoveFormat
 	got := err.Error()
@@ -343,7 +343,7 @@ func TestMoveInvalid(t *testing.T) {
 	move := "b1d2"
 	board := NewGame()
 
-	err := board.movePieceFromString(move)
+	err := board.MovePieceFromString(move)
 
 	want := errInvalidMove
 	got := err.Error()
@@ -357,7 +357,7 @@ func TestMoveWrongColor(t *testing.T) {
 	move := "e7e5"
 	board := NewGame()
 
-	err := board.movePieceFromString(move)
+	err := board.MovePieceFromString(move)
 
 	want := errInvalidMoveWrongColor
 	got := err.Error()
@@ -371,7 +371,7 @@ func TestMoveNoPiece(t *testing.T) {
 	move := "e3e4"
 	board := NewGame()
 
-	err := board.movePieceFromString(move)
+	err := board.MovePieceFromString(move)
 
 	want := errInvalidMoveNoPiece
 	got := err.Error()

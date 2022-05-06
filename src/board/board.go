@@ -34,19 +34,30 @@ func (b BoardDefinition) piecesString() (str string) {
 
 func (b BoardDefinition) String() string {
 
-	s := fmt.Sprintf("%v to play\n\n", b.toPlay)
+	s := fmt.Sprintf("\u001b[2J%v to play\n\n", b.toPlay)
+
+	cnt := 0
 
 	for i, square := range b.pieces {
-		s = s + fmt.Sprint(square) + " "
-		if (i+1)%8 == 0 {
-			s = s + "\n"
+		if cnt%2 == 0 {
+			s = s + "\u001b[47m"
+		} else {
+			s = s + "\u001b[40m"
 		}
+		s = s + pieceMap[square] + " "
+		if (i+1)%8 == 0 {
+			s = s + "\u001b[0m\n"
+			cnt++
+		}
+		cnt++
 	}
+
+	s = s + "\u001b[0m"
 
 	return s
 }
 
-func (b *BoardDefinition) movePieceFromString(move string) (err error) {
+func (b *BoardDefinition) MovePieceFromString(move string) (err error) {
 
 	if len(move) < 4 || len(move) > 5 {
 		err = errors.New(errInvalidMoveFormat)

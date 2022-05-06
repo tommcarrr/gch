@@ -7,6 +7,17 @@ const (
 	White Color = 1
 )
 
+func (c Color) String() string {
+	switch c {
+	case Black:
+		return "Black"
+	case White:
+		return "White"
+	default:
+		return "Color Not Found"
+	}
+}
+
 var fileMap = map[string]int{
 	"a": 0,
 	"b": 1,
@@ -94,4 +105,20 @@ var squareMap = map[string]int{
 	"f1": 61,
 	"g1": 62,
 	"h1": 63,
+}
+
+var pieceMap = map[string]string{
+	"K": "\u001b[37m\u2654",
+	"Q": "\u001b[37m\u2655",
+	"R": "\u001b[37m\u2656",
+	"B": "\u001b[37m\u2657",
+	"N": "\u001b[37m\u2658",
+	"P": "\u001b[37m\u2659",
+	"k": "\u001b[30;1m\u265a",
+	"q": "\u001b[30;1m\u265b",
+	"r": "\u001b[30;1m\u265c",
+	"b": "\u001b[30;1m\u265d",
+	"n": "\u001b[30;1m\u265e",
+	"p": "\u001b[30;1m\u265f",
+	"-": " ",
 }
